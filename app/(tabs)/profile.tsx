@@ -1,0 +1,10 @@
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
+
+export default function ProfileScreen() {
+  return (
+    <ThemedView className="flex-1 items-center justify-center p-5">
+      <ThemedText type="title">Profile</ThemedText>
+    </ThemedView>
+  )
+}

@@ -1,4 +1,6 @@
 import { ThemedText } from '@/components/themed-text'
+import { apiClient } from '@/lib/api-client'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Image, TouchableOpacity, View } from 'react-native'
 
 export interface Post {
@@ -12,36 +14,49 @@ export interface Post {
   isLiked: boolean
 }
 
-// TODO: Define the LIKE_POST mutation using gql
-// The mutation should accept an $id variable of type ID!
-// It should call the likePost mutation and return id, likes, and isLiked fields
-// const LIKE_POST = gql`
-//   # Your mutation here
-// `
-
-// TODO: Define the UNLIKE_POST mutation using gql
-// The mutation should accept an $id variable of type ID!
-// It should call the unlikePost mutation and return id, likes, and isLiked fields
-// const UNLIKE_POST = gql`
-//   # Your mutation here
-// `
-
 export const PostCard = ({ post }: { post: Post }) => {
-  // TODO: Set up the likePost mutation hook using useMutation
+  const queryClient = useQueryClient()
 
-  // TODO: Set up the unlikePost mutation hook using useMutation
+  // TODO: Implement likeMutation using useMutation from @tanstack/react-query
+  // Requirements:
+  // 1. Use apiClient.likePost(id) as the mutationFn
+  // 2. Implement optimistic updates in onMutate:
+  //    - Cancel any outgoing refetches for the "posts" query
+  //    - Snapshot the previous query data for rollback
+  //    - Optimistically update the cache: increment likes by 1 and set isLiked to true for the post with matching id
+  //    - The query data structure is: { pages: Post[][] }
+  // 3. In onSuccess: Update the cache with the server response (updatedPost) to ensure consistency
+  // 4. In onError: Rollback to the previous data if the mutation fails
+  const likeMutation = useMutation({
+    mutationFn: (id: string) => apiClient.likePost(id)
+    // TODO: Add onMutate, onSuccess, and onError handlers
+  })
 
-  const handleLike = () => {
-    // TODO: Call the unlikePost mutation with:
-    // - variables: { id: post.id }
-    // - optimisticResponse: An object that immediately updates the UI
-    //   The optimisticResponse should have:
-    //   - unlikePost: { __typename: 'Post', id: post.id, likes: post.likes - 1, isLiked: false }
-    // TODO: Call the likePost mutation with:
-    // - variables: { id: post.id }
-    // - optimisticResponse: An object that immediately updates the UI
-    //   The optimisticResponse should have:
-    //   - likePost: { __typename: 'Post', id: post.id, likes: post.likes + 1, isLiked: true }
+  // TODO: Implement unlikeMutation using useMutation from @tanstack/react-query
+  // Requirements:
+  // 1. Use apiClient.unlikePost(id) as the mutationFn
+  // 2. Implement optimistic updates in onMutate:
+  //    - Cancel any outgoing refetches for the "posts" query
+  //    - Snapshot the previous query data for rollback
+  //    - Optimistically update the cache: decrement likes by 1 and set isLiked to false for the post with matching id
+  //    - The query data structure is: { pages: Post[][] }
+  // 3. In onSuccess: Update the cache with the server response (updatedPost) to ensure consistency
+  // 4. In onError: Rollback to the previous data if the mutation fails
+  const unlikeMutation = useMutation({
+    mutationFn: (id: string) => apiClient.unlikePost(id)
+    // TODO: Add onMutate, onSuccess, and onError handlers
+  })
+
+  const handleLike = async () => {
+    try {
+      if (post.isLiked) {
+        await unlikeMutation.mutateAsync(post.id)
+      } else {
+        await likeMutation.mutateAsync(post.id)
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error)
+    }
   }
 
   const formatTimestamp = (timestamp: string) => {

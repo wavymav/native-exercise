@@ -5,45 +5,41 @@ import { ThemedView } from '@/components/themed-view'
 import React from 'react'
 import { FlatList, RefreshControl, TouchableOpacity, View } from 'react-native'
 
-// TODO: Define the GET_POSTS query using gql
-// The query should accept optional $offset and $limit variables (both Int)
-// It should query the posts field with these variables
-// The query should return: id, creatorName, creatorAvatar, content, imageUrl, likes, timestamp, isLiked
-// const GET_POSTS = gql`
-//   # Your query here
-// `
-
 export default function FeedScreen() {
-  // TODO: Set up the useQuery hook with:
-  // - GET_POSTS query
-  // - variables: { offset: 0, limit: 20 }
-  // - notifyOnNetworkStatusChange: true (to track refresh state)
-  // Destructure: data, loading, error, fetchMore, refetch, networkStatus
-  // Example: const { data, loading, error, fetchMore, refetch, networkStatus } = useQuery(...)
+  // TODO: Implement useInfiniteQuery hook for fetching posts with pagination
+  // Requirements:
+  // 1. Use queryKey: ['posts']
+  // 2. Use queryFn: ({ pageParam = 0 }) => apiClient.getPosts(pageParam, 20)
+  //    - pageParam represents the offset (starting index)
+  //    - Limit should be 20 posts per page
+  // 3. Implement getNextPageParam:
+  //    - If lastPage.length < 20, return undefined (no more pages)
+  //    - Otherwise, return the next offset: allPages.length * 20
+  // 4. Set initialPageParam to 0
+  // 5. Destructure: data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching
+  // Placeholder variables for useInfiniteQuery destructured values
+  const data: { pages: Post[][] } = { pages: [] } // TODO: replace with the list of posts from useInfiniteQuery
+  const isLoading = false // TODO: replace with the loading state from useInfiniteQuery
+  const error: { message: string } | undefined = undefined // TODO: replace with the error state from useInfiniteQuery
+  const isFetchingNextPage = false // TODO: replace with the fetching next page state from useInfiniteQuery
+  const isRefetching = false // TODO: replace with the refetching state from useInfiniteQuery
 
-  // Placeholder variables - replace these with destructured values from useQuery above
-  const loading = false // TODO: Replace with loading from useQuery
-  const error: { message: string } | undefined = undefined // TODO: Replace with error from useQuery
-  const fetchMore = () => {} // TODO: Replace with fetchMore from useQuery
-  const refetch = () => {} // TODO: Replace with refetch from useQuery
-  const networkStatus = 1 // TODO: Replace with networkStatus from useQuery
+  // Flatten pages array to get all posts (will always be empty array as data is undefined)
+  const posts: Post[] = data?.pages?.flat() || [] // TODO: replace with the list of posts from useInfiniteQuery
+  const isRefreshing = isRefetching && !isFetchingNextPage
 
-  const posts: Post[] = [] // TODO: Extract posts from data (data?.posts || [])
-  const isRefreshing = false // TODO: Set to true when networkStatus === 4 (refetching)
-
-  // TODO: Implement handleLoadMore function for infinite scrolling pagination
-  // - Check if loading, return early if so
-  // - Call fetchMore with variables: { offset: posts.length, limit: 20 }
+  // TODO: Implement handleLoadMore function
+  // Requirements:
+  // - Should call fetchNextPage() if there are more pages (hasNextPage) and not currently fetching (isFetchingNextPage)
   const handleLoadMore = () => {
-    // Your implementation here
-    // Hint: if (loading) return; fetchMore({ variables: { offset: posts.length, limit: 20 } })
+    // TODO: Implement load more logic
   }
 
-  // TODO: Implement handleRefresh function for pull-to-refresh
-  // - Call refetch with variables: { offset: 0, limit: 20 }
+  // TODO: Implement handleRefresh function
+  // Requirements:
+  // - Should call refetch() to refresh the posts list
   const handleRefresh = () => {
-    // Your implementation here
-    // Hint: refetch({ offset: 0, limit: 20 })
+    // TODO: Implement refresh logic
   }
 
   const renderPost = () => null // TODO: render a post card
@@ -60,7 +56,7 @@ export default function FeedScreen() {
   }
 
   const renderEmpty = () => {
-    if (loading && posts.length === 0) {
+    if (isLoading && posts.length === 0) {
       return (
         <View className="flex-1 items-center justify-center py-20">
           <Spinner />
@@ -97,7 +93,7 @@ export default function FeedScreen() {
     return (
       <ThemedView className="flex-1 items-center justify-center py-20 px-8">
         <ThemedText type="title" className="text-center">
-          Build your feed here!
+          No posts found
         </ThemedText>
       </ThemedView>
     )

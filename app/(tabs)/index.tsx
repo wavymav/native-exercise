@@ -3,7 +3,7 @@ import { Spinner } from '@/components/spinner'
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
 import React from 'react'
-import { FlatList, RefreshControl, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 export default function FeedScreen() {
   // TODO: Implement useInfiniteQuery hook for fetching posts with pagination
@@ -93,7 +93,7 @@ export default function FeedScreen() {
     return (
       <ThemedView className="flex-1 items-center justify-center py-20 px-8">
         <ThemedText type="title" className="text-center">
-          No posts found
+          No posts...
         </ThemedText>
       </ThemedView>
     )
@@ -101,41 +101,24 @@ export default function FeedScreen() {
 
   return (
     <ThemedView className="flex-1">
-      {/* TODO: Set up FlatList to display the post feed.
-          - The FlatList should:
-            - Use the `posts` array as data.
-            - Render each post with `renderPost`.
-            - Use `keyExtractor` for keys.
-            - Use `onEndReached` to trigger `handleLoadMore` for infinite scroll.
-            - Use `refreshControl` for pull-to-refresh with `isRefreshing` and `handleRefresh`.
-            - Display a footer and placeholder if empty.
-            - Style as needed.
-          - Remove/add props as appropriate once your logic is implemented.
-       */}
-      <FlatList
-        data={posts /* TODO: replace with the list of posts from your query */}
-        renderItem={renderPost /* TODO: render a post card */}
-        keyExtractor={keyExtractor /* TODO: extract a unique post ID */}
-        onEndReached={handleLoadMore /* TODO: implement infinite loading */}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          renderFooter /* TODO: optional: show spinner on load more */
-        }
-        ListEmptyComponent={renderEmpty /* TODO: empty/error/loading UI */}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing /* TODO: isRefreshing state */}
-            onRefresh={handleRefresh /* TODO: implement refresh logic */}
-          />
-        }
-        contentContainerClassName="p-4"
-        showsVerticalScrollIndicator={false}
-        maxToRenderPerBatch={10}
-        updateCellsBatchingPeriod={50}
-        initialNumToRender={10}
-        windowSize={10}
-        removeClippedSubviews={true}
-      />
+      {/* 
+        // TODO: Remove the placeholder and Implement the FlatList to display the post feed here.
+        Requirements:
+          - Use React Native's FlatList component.
+          - Data: Use the `posts` array from your query results.
+          - Rendering: Each post should be rendered using the `renderPost` function.
+          - Keys: Use `keyExtractor` to provide unique keys for each post.
+          - Pagination: Implement infinite scroll with `onEndReached` to trigger `handleLoadMore`.
+          - Pull-to-Refresh: Use React Native's RefreshControl component, controlled by `isRefreshing` and `handleRefresh`.
+          - Footer: Use `renderFooter` to show a loading spinner or indicator when loading more posts.
+          - Empty/Error/Loading State: Use `renderEmpty` for empty/error/loading UI.
+          - Styling: Add any necessary FlatList and content styling as needed.
+      */}
+      <ThemedView className="flex-1 items-center justify-center py-20 px-8">
+        <ThemedText type="title" className="text-center">
+          Build your feed here!
+        </ThemedText>
+      </ThemedView>
     </ThemedView>
   )
 }

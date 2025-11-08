@@ -1,167 +1,137 @@
-# Post Feed - Technical Coding Exercise
+# Post Feed - React Native Coding Exercise
 
 ## Overview
 
-This is a React Native Expo application that displays a feed of posts. Your task is to implement the GraphQL queries and mutations needed to fetch posts, handle infinite scrolling pagination, and enable users to like/unlike posts with optimistic updates.
+Build a working post feed with infinite scrolling and like functionality using React Native, Expo, and @tanstack/react-query with a REST API.
 
 **Time Limit:** 45-50 minutes
 
-## Setup Instructions
+## Getting Started
 
-1. Install dependencies:
+```bash
+npm install
+npx expo start
+```
 
-   ```bash
-   npm install
-   ```
+Then press `i` for iOS simulator or `a` for Android emulator.
 
-2. Start the development server:
+## What You Need to Implement
 
-   ```bash
-   npx expo start
-   ```
+### 1. Fetch Posts with Infinite Scrolling (`app/(tabs)/index.tsx`)
 
-3. Open the app in your preferred environment (iOS simulator, Android emulator, or Expo Go)
+**Find the TODOs at lines 8-29**
 
-## Exercise Tasks
+1. Import and set up `useInfiniteQuery` from `@tanstack/react-query`
+   - Import `apiClient` from `@/lib/api-client`
+   - Use `queryKey: ['posts']`
+   - Use `queryFn: ({ pageParam = 0 }) => apiClient.getPosts(pageParam, 20)`
+   - Set `initialPageParam: 0`
 
-### Task 1: Implement GET_POSTS Query (`app/(tabs)/index.tsx`)
+2. Implement `getNextPageParam`:
+   - Return `undefined` if `lastPage.length < 20` (no more pages)
+   - Otherwise return `allPages.length * 20` (next offset)
 
-**Location:** `app/(tabs)/index.tsx`
+3. Destructure the query result:
+   - `data`, `isLoading`, `error`, `fetchNextPage`, `hasNextPage`, `isFetchingNextPage`, `refetch`, `isRefetching`
 
-**What to do:**
+4. Flatten the pages array to get all posts: `data?.pages?.flat() || []`
 
-1. Define the `GET_POSTS` GraphQL query using the `gql` template literal
+### 2. Implement Pagination (`app/(tabs)/index.tsx`)
 
-   - Accept optional `$offset` and `$limit` variables (both `Int`)
-   - Query the `posts` field with these variables
-   - Return: `id`, `creatorName`, `creatorAvatar`, `content`, `imageUrl`, `likes`, `timestamp`, `isLiked`
-
-2. Set up the `useQuery` hook:
-
-   - Use the `GET_POSTS` query
-   - Pass `variables: { offset: 0, limit: 20 }`
-   - Set `notifyOnNetworkStatusChange: true` to track refresh state
-   - Destructure: `data`, `loading`, `error`, `fetchMore`, `refetch`, `networkStatus`
-
-3. Extract posts from the query data: `data?.posts || []`
-
-4. Set `isRefreshing` to `true` when `networkStatus === 4` (refetching)
-
-### Task 2: Implement Infinite Scrolling Pagination (`app/(tabs)/index.tsx`)
-
-**Location:** `app/(tabs)/index.tsx`
-
-**What to do:**
+**Find the TODOs at lines 31-43**
 
 1. Implement `handleLoadMore` function:
-
-   - Check if `loading` is true, return early if so
-   - Call `fetchMore` with `variables: { offset: posts.length, limit: 20 }`
+   - Call `fetchNextPage()` if `hasNextPage` is true and not currently `isFetchingNextPage`
 
 2. Implement `handleRefresh` function:
-   - Call `refetch` with `variables: { offset: 0, limit: 20 }`
+   - Call `refetch()` to refresh the entire feed
 
-The FlatList is already configured with:
+### 3. Render the Feed (`app/(tabs)/index.tsx`)
 
-- `onEndReached={handleLoadMore}` for infinite scrolling
-- `onEndReachedThreshold={0.5}` to trigger loading when 50% from bottom
-- `refreshControl` for pull-to-refresh functionality
+**Find the TODOs at lines 45-123**
 
-### Task 3: Implement Like/Unlike Mutations (`components/post-card.tsx`)
+Replace the placeholder with a FlatList that:
+- Renders PostCard components for each post
+- Implements `keyExtractor` to return unique post IDs
+- Calls `handleLoadMore` when scrolling near the bottom
+- Implements pull-to-refresh with RefreshControl
+- Shows loading footer and empty state (helpers are provided)
 
-**Location:** `components/post-card.tsx`
+### 4. Add Like/Unlike Functionality (`components/post-card.tsx`)
 
-**What to do:**
+**Find the TODOs at lines 20-48**
 
-1. Define the `LIKE_POST` mutation using `gql`:
+1. Implement `likeMutation` using `useMutation`:
+   - Use `apiClient.likePost(id)` as `mutationFn`
 
-   - Accept `$id` variable of type `ID!`
-   - Call the `likePost` mutation
-   - Return: `id`, `likes`, `isLiked`
+2. Implement `unlikeMutation` using `useMutation`:
+   - Use `apiClient.unlikePost(id)` as `mutationFn`
 
-2. Define the `UNLIKE_POST` mutation using `gql`:
+3. For both mutations, implement optimistic updates:
+   - **onMutate**: Cancel outgoing refetches, snapshot previous data, update cache optimistically
+   - **onSuccess**: Update cache with server response
+   - **onError**: Rollback to previous data
 
-   - Accept `$id` variable of type `ID!`
-   - Call the `unlikePost` mutation
-   - Return: `id`, `likes`, `isLiked`
+4. Cache update structure:
+   - Query data is `{ pages: Post[][] }`
+   - Find and update the post in the nested array
+   - For like: increment `likes` by 1, set `isLiked` to `true`
+   - For unlike: decrement `likes` by 1, set `isLiked` to `false`
 
-3. Set up mutation hooks:
+## REST API
 
-   - Use `useMutation` for `LIKE_POST`
-   - Use `useMutation` for `UNLIKE_POST`
+The API client (`lib/api-client.ts`) provides these methods:
 
-4. Implement `handleLike` function with optimistic updates:
-   - If `post.isLiked` is true, call `unlikePost` mutation with:
-     - `variables: { id: post.id }`
-     - `optimisticResponse: { unlikePost: { __typename: 'Post', id: post.id, likes: post.likes - 1, isLiked: false } }`
-   - Otherwise, call `likePost` mutation with:
-     - `variables: { id: post.id }`
-     - `optimisticResponse: { likePost: { __typename: 'Post', id: post.id, likes: post.likes + 1, isLiked: true } }`
+### Endpoints
 
-## GraphQL Schema Reference
+**GET /api/posts?offset={offset}&limit={limit}**
+- Returns: `Post[]`
+- Pagination via offset/limit query parameters
 
-The GraphQL endpoint is available at `/api/graphql`. Here's the schema:
+**POST /api/posts/{id}/like**
+- Returns: `Post` (updated post object)
 
-```graphql
-type Post {
-  id: ID!
-  creatorName: String!
-  creatorAvatar: String!
-  content: String!
-  imageUrl: String
-  likes: Int!
-  timestamp: String!
-  isLiked: Boolean!
-}
+**POST /api/posts/{id}/unlike**
+- Returns: `Post` (updated post object)
 
-type Query {
-  posts(offset: Int, limit: Int): [Post!]!
-}
+### Post Interface
 
-type Mutation {
-  likePost(id: ID!): Post
-  unlikePost(id: ID!): Post
+```typescript
+interface Post {
+  id: string
+  creatorName: string
+  creatorAvatar: string
+  content: string
+  imageUrl: string | null
+  likes: number
+  timestamp: string
+  isLiked: boolean
 }
 ```
 
-## Key Points
+## Important Notes
 
-- **Optimistic Updates**: The mutations have simulated network delays (1-1.5 seconds). Use optimistic updates to provide immediate UI feedback.
-- **Pagination**: The API supports offset-based pagination. Use `fetchMore` for infinite scrolling.
-- **Cache Management**: Apollo Client cache is already configured to handle pagination merging. The cache will automatically merge paginated results.
-- **Performance**: The FlatList is already optimized with performance props (`maxToRenderPerBatch`, `windowSize`, etc.) for handling 500+ items.
+- **Optimistic Updates Required**: Mutations have 1-1.5 second delays. Implement optimistic updates in `onMutate` for instant UI feedback.
+- **React Query Cache**: Query data structure is `{ pages: Post[][] }` for infinite queries.
+- **Pagination**: Use `useInfiniteQuery` with `getNextPageParam` to handle offset-based pagination.
+- **Dataset**: 500 mock posts available for testing pagination.
 
-## What's Already Implemented
+## What's Already Built
 
-✅ Apollo Client setup and configuration  
-✅ GraphQL schema and resolvers  
-✅ Post card UI component  
-✅ FlatList with performance optimizations  
-✅ Loading states and error handling UI  
-✅ Pull-to-refresh UI  
-✅ Styling with NativeWind
+- React Query client with cache configuration
+- REST API endpoints with simulated delays
+- Complete UI components and styling
+- Loading/error states
+- API client wrapper functions
 
-## Evaluation Criteria
+## Success Criteria
 
-Your implementation will be evaluated on:
-
-1. **Correctness**: Queries and mutations work as expected
-2. **Optimistic Updates**: UI updates immediately when liking/unliking
-3. **Pagination**: Infinite scrolling loads more posts correctly
-4. **Code Quality**: Clean, readable code following React/Apollo best practices
-5. **Error Handling**: Existing error handling is preserved
-
-## Tips
-
-- Check the GraphQL schema in `graphql/schema.ts` for exact field names and types
-- The Apollo Client cache is configured to handle pagination - you don't need to manually merge results
-- Use the Apollo DevTools (if available) to debug queries and mutations
-- Test both like and unlike flows
-- Test pagination by scrolling to the bottom
-- Test pull-to-refresh functionality
+1. Posts load and display correctly
+2. Infinite scroll loads more posts
+3. Pull-to-refresh resets the feed
+4. Like button updates instantly (optimistic)
+5. Code is clean and follows React Query best practices
 
 ## Questions?
 
-If you have any questions about the requirements or setup, please ask your interviewer.
-
-Good luck! 🚀
+Ask your interviewer if you need clarification on any requirements.

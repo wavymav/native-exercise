@@ -7,23 +7,17 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         posts: {
-          // Don't use keyArgs to ensure all posts queries use the same cache entry
           keyArgs: false,
           merge(existing = [], incoming, { args }) {
-            // If offset is 0 or existing is empty, it's a refresh or initial load
             if (!args?.offset || args.offset === 0) {
-              // On refresh, just return incoming data
-              // Apollo's normalization will handle merging individual Post objects
               return incoming
             }
-            // Otherwise, append new posts for pagination
             return [...existing, ...incoming]
           }
         }
       }
     },
     Post: {
-      // Ensure posts are normalized by ID in the cache
       keyFields: ['id']
     }
   }

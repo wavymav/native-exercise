@@ -12,36 +12,21 @@ export interface Post {
   isLiked: boolean
 }
 
-// TODO: Define the LIKE_POST mutation using gql
-// The mutation should accept an $id variable of type ID!
-// It should call the likePost mutation and return id, likes, and isLiked fields
+// TODO: Define a GraphQL mutation to like a post
 // const LIKE_POST = gql`
 //   # Your mutation here
 // `
 
-// TODO: Define the UNLIKE_POST mutation using gql
-// The mutation should accept an $id variable of type ID!
-// It should call the unlikePost mutation and return id, likes, and isLiked fields
+// TODO: Define a GraphQL mutation to unlike a post
 // const UNLIKE_POST = gql`
 //   # Your mutation here
 // `
 
 export const PostCard = ({ post }: { post: Post }) => {
-  // TODO: Set up the likePost mutation hook using useMutation
-
-  // TODO: Set up the unlikePost mutation hook using useMutation
+  // TODO: Set up mutation hooks for liking and unliking posts
 
   const handleLike = () => {
-    // TODO: Call the unlikePost mutation with:
-    // - variables: { id: post.id }
-    // - optimisticResponse: An object that immediately updates the UI
-    //   The optimisticResponse should have:
-    //   - unlikePost: { __typename: 'Post', id: post.id, likes: post.likes - 1, isLiked: false }
-    // TODO: Call the likePost mutation with:
-    // - variables: { id: post.id }
-    // - optimisticResponse: An object that immediately updates the UI
-    //   The optimisticResponse should have:
-    //   - likePost: { __typename: 'Post', id: post.id, likes: post.likes + 1, isLiked: true }
+    // TODO: Implement like/unlike functionality with optimistic updates
   }
 
   const formatTimestamp = (timestamp: string) => {

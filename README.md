@@ -19,65 +19,19 @@ Then press `i` for iOS simulator or `a` for Android emulator.
 
 ### 1. Fetch Posts with GraphQL (`app/(tabs)/index.tsx`)
 
-**Find the TODOs at lines 8-32**
-
-1. Define the `GET_POSTS` GraphQL query using `gql`
-   - Accept `$offset` and `$limit` variables (both `Int`)
-   - Query the `posts` field with these variables
-   - Return all Post fields: `id`, `creatorName`, `creatorAvatar`, `content`, `imageUrl`, `likes`, `timestamp`, `isLiked`
-
-2. Set up the `useQuery` hook
-   - Use the `GET_POSTS` query
-   - Pass `variables: { offset: 0, limit: 20 }`
-   - Set `notifyOnNetworkStatusChange: true` to track refresh state
-   - Destructure: `data`, `loading`, `error`, `fetchMore`, `refetch`, `networkStatus`
-
-3. Extract posts from the query data
-4. Track refresh state using `networkStatus === 4`
+Implement a GraphQL query to fetch posts and set up the query hook. Extract the posts data and handle loading/error states.
 
 ### 2. Implement Pagination (`app/(tabs)/index.tsx`)
 
-**Find the TODOs at lines 34-47**
-
-1. Implement `handleLoadMore` function:
-   - Check if already loading and return early if so
-   - Call `fetchMore` with new offset using `posts.length` and `limit: 20`
-
-2. Implement `handleRefresh` function:
-   - Call `refetch` with `offset: 0` to reset the feed
+Implement infinite scrolling pagination and pull-to-refresh functionality.
 
 ### 3. Render the Feed (`app/(tabs)/index.tsx`)
 
-**Find the TODOs at lines 49-126**
-
-Replace the placeholder with a FlatList that:
-- Renders PostCard components for each post
-- Implements `keyExtractor` to return unique post IDs
-- Calls `handleLoadMore` when scrolling near the bottom
-- Implements pull-to-refresh with RefreshControl
-- Shows loading footer and empty state (helpers are provided)
+Replace the placeholder with a FlatList that displays posts, handles pagination, and shows appropriate loading/error states.
 
 ### 4. Add Like/Unlike Functionality (`components/post-card.tsx`)
 
-**Find the TODOs at lines 15-45**
-
-1. Define `LIKE_POST` mutation using `gql`
-   - Accept `$id` variable of type `ID!`
-   - Call the `likePost` mutation
-   - Return: `id`, `likes`, `isLiked`
-
-2. Define `UNLIKE_POST` mutation using `gql`
-   - Accept `$id` variable of type `ID!`
-   - Call the `unlikePost` mutation
-   - Return: `id`, `likes`, `isLiked`
-
-3. Set up `useMutation` hooks for both mutations
-
-4. Implement `handleLike` function with optimistic updates:
-   - If post is liked, call `unlikePost` with optimistic response
-   - If post is not liked, call `likePost` with optimistic response
-   - Include `__typename: 'Post'` in optimistic response
-   - Update `likes` count and `isLiked` state optimistically
+Implement like and unlike mutations with optimistic updates for instant UI feedback.
 
 ## GraphQL API
 
@@ -107,10 +61,9 @@ type Mutation {
 
 ## Important Notes
 
-- **Optimistic Updates Required**: Mutations have 1-1.5 second delays. Use `optimisticResponse` for instant UI updates.
-- **Apollo Cache**: Pre-configured to merge paginated results automatically.
-- **Network Status**: Use `networkStatus === 4` to detect pull-to-refresh state.
-- **Dataset**: 500 mock posts available for testing pagination.
+- Mutations have network delays that should be handled appropriately.
+- Apollo Client cache is pre-configured.
+- 500 mock posts are available for testing pagination.
 
 ## What's Already Built
 

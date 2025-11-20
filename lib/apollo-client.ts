@@ -1,29 +1,9 @@
 import { ApolloClient, HttpLink, InMemoryCache, from } from '@apollo/client'
 import { Platform } from 'react-native'
 
-// Create the cache
-const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        posts: {
-          keyArgs: false,
-          merge(existing = [], incoming, { args }) {
-            if (!args?.offset || args.offset === 0) {
-              return incoming
-            }
-            return [...existing, ...incoming]
-          }
-        }
-      }
-    },
-    Post: {
-      keyFields: ['id']
-    }
-  }
-})
+// TODO: Configure the Apollo Client cache to handle pagination
+const cache = new InMemoryCache()
 
-// Persist cache configuration
 export const initializeApollo = async () => {
   // Determine the GraphQL endpoint based on platform
   const getGraphQLEndpoint = () => {

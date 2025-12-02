@@ -86,6 +86,54 @@ type Mutation {
 5. Like button updates instantly (optimistic)
 6. Code is clean and follows Apollo best practices
 
+## Bonus: Performance Improvements (Optional)
+
+If you complete the main exercise early and have time remaining within the 45-50 minute limit, implement the following performance optimizations. These are quick wins that demonstrate React performance optimization skills:
+
+### 1. Memoize PostCard Component (`components/post-card.tsx`)
+
+Wrap the `PostCard` component with `React.memo` to prevent unnecessary re-renders when parent components update but the post data hasn't changed.
+
+**Considerations:**
+
+- What props should trigger a re-render?
+- How should you handle the comparison function?
+
+### 2. Optimize Expensive Computations (`components/post-card.tsx`)
+
+The `formatTimestamp` function is called on every render. Use `useMemo` to memoize the formatted timestamp value so it's only recalculated when the `timestamp` prop changes.
+
+### 3. Optimize FlatList Callbacks (`app/(tabs)/index.tsx`)
+
+Use `useCallback` to memoize the `renderPost` and `keyExtractor` functions passed to FlatList. This prevents these functions from being recreated on every render, which can cause FlatList to unnecessarily re-render items.
+
+**Hint:** Consider what dependencies these callbacks have.
+
+### 4. Debounce Like Button Clicks (`components/post-card.tsx`)
+
+Add debouncing to the like button handler to prevent rapid-fire mutations if a user clicks multiple times quickly. This reduces unnecessary network requests and potential race conditions.
+
+**Considerations:**
+
+- How long should the debounce delay be?
+- Should you use a library or implement a simple debounce yourself?
+- How does this interact with optimistic updates?
+
+### Success Criteria for Bonus
+
+1. ✅ PostCard is memoized with `React.memo`
+2. ✅ Timestamp formatting is memoized with `useMemo`
+3. ✅ FlatList callbacks are memoized with `useCallback`
+4. ✅ Like button has debouncing to prevent rapid clicks
+5. ✅ Performance improvements are measurable (smoother scrolling, fewer re-renders)
+
+### Testing Performance Improvements
+
+- Use React DevTools Profiler to verify fewer re-renders
+- Test scrolling performance with 100+ posts
+- Verify that rapid like clicks don't cause multiple mutations
+- Verify that memoization reduces unnecessary component re-renders
+
 ## Questions?
 
 Ask your interviewer if you need clarification on any requirements.

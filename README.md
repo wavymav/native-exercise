@@ -2,7 +2,6 @@
 
 <img width="360" alt="Screenshot 2025-12-03 at 11 24 05 AM" src="https://github.com/user-attachments/assets/2019a421-3112-40fc-ac2b-d1b5aeb7fac2" />
 
-
 ## Overview
 
 Build a working post feed with infinite scrolling and like functionality using React Native, Expo, and GraphQL.
@@ -91,51 +90,29 @@ type Mutation {
 
 ## Bonus: Performance Improvements (Optional)
 
-If you complete the main exercise early and have time remaining within the 45-50 minute limit, implement the following performance optimizations. These are quick wins that demonstrate React performance optimization skills:
+If you complete the main exercise early and have time remaining within the 45-50 minute limit, identify and implement performance optimizations. Look for opportunities to improve rendering performance, reduce unnecessary computations, and prevent race conditions.
 
-### 1. Memoize PostCard Component (`components/post-card.tsx`)
+### Areas to Consider
 
-Wrap the `PostCard` component with `React.memo` to prevent unnecessary re-renders when parent components update but the post data hasn't changed.
-
-**Considerations:**
-
-- What props should trigger a re-render?
-- How should you handle the comparison function?
-
-### 2. Optimize Expensive Computations (`components/post-card.tsx`)
-
-The `formatTimestamp` function is called on every render. Use `useMemo` to memoize the formatted timestamp value so it's only recalculated when the `timestamp` prop changes.
-
-### 3. Optimize FlatList Callbacks (`app/(tabs)/index.tsx`)
-
-Use `useCallback` to memoize the `renderPost` and `keyExtractor` functions passed to FlatList. This prevents these functions from being recreated on every render, which can cause FlatList to unnecessarily re-render items.
-
-**Hint:** Consider what dependencies these callbacks have.
-
-### 4. Debounce Like Button Clicks (`components/post-card.tsx`)
-
-Add debouncing to the like button handler to prevent rapid-fire mutations if a user clicks multiple times quickly. This reduces unnecessary network requests and potential race conditions.
-
-**Considerations:**
-
-- How long should the debounce delay be?
-- Should you use a library or implement a simple debounce yourself?
-- How does this interact with optimistic updates?
+- **Component Re-renders**: Are components re-rendering unnecessarily when parent state changes? Consider React's memoization patterns to prevent re-renders when props haven't changed.
+- **Expensive Computations**: Are there calculations that run on every render but could be optimized? Look for functions that process data but only depend on specific props.
+- **List Performance**: Are there optimizations that could improve FlatList rendering performance? Consider memoizing callbacks passed to FlatList to prevent unnecessary item re-renders.
+- **User Interactions**: Are there edge cases with rapid user interactions that should be handled? Think about preventing duplicate mutations when users click buttons quickly.
 
 ### Success Criteria for Bonus
 
-1. ✅ PostCard is memoized with `React.memo`
-2. ✅ Timestamp formatting is memoized with `useMemo`
-3. ✅ FlatList callbacks are memoized with `useCallback`
-4. ✅ Like button has debouncing to prevent rapid clicks
+1. ✅ Unnecessary component re-renders are minimized
+2. ✅ Expensive computations are optimized
+3. ✅ List rendering performance is improved
+4. ✅ Rapid user interactions are handled gracefully
 5. ✅ Performance improvements are measurable (smoother scrolling, fewer re-renders)
 
 ### Testing Performance Improvements
 
 - Use React DevTools Profiler to verify fewer re-renders
 - Test scrolling performance with 100+ posts
-- Verify that rapid like clicks don't cause multiple mutations
-- Verify that memoization reduces unnecessary component re-renders
+- Verify that rapid interactions don't cause issues
+- Verify that optimizations reduce unnecessary work
 
 ## Questions?
 

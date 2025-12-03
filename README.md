@@ -1,5 +1,8 @@
 # Post Feed - React Native Coding Exercise
 
+<img width="360" alt="Screenshot 2025-12-03 at 11 24 05 AM" src="https://github.com/user-attachments/assets/2019a421-3112-40fc-ac2b-d1b5aeb7fac2" />
+
+
 ## Overview
 
 Build a working post feed with infinite scrolling and like functionality using React Native, Expo, and GraphQL.

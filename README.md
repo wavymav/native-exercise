@@ -1,5 +1,7 @@
 # Post Feed - React Native Coding Exercise
 
+<img width="360" alt="iOS Post Feed Screenshot" src="assets/images/ios-post-feed.png" />
+
 ## Overview
 
 Build a working post feed with infinite scrolling and like functionality using React Native, Expo, and @tanstack/react-query with a REST API.
@@ -10,10 +12,10 @@ Build a working post feed with infinite scrolling and like functionality using R
 
 ```bash
 npm install
-npx expo start
+npx expo start --web
 ```
 
-Then press `i` for iOS simulator or `a` for Android emulator.
+Then open the app in your browser.
 
 ## What You Need to Implement
 
@@ -32,7 +34,7 @@ Then press `i` for iOS simulator or `a` for Android emulator.
    - Otherwise return `allPages.length * 20` (next offset)
 
 3. Destructure the query result:
-   - `data`, `isLoading`, `error`, `fetchNextPage`, `hasNextPage`, `isFetchingNextPage`, `refetch`, `isRefetching`
+   - `data`, `isLoading`, `error`, `fetchNextPage`, `hasNextPage`, `isFetchingNextPage`
 
 4. Flatten the pages array to get all posts: `data?.pages?.flat() || []`
 
@@ -43,9 +45,6 @@ Then press `i` for iOS simulator or `a` for Android emulator.
 1. Implement `handleLoadMore` function:
    - Call `fetchNextPage()` if `hasNextPage` is true and not currently `isFetchingNextPage`
 
-2. Implement `handleRefresh` function:
-   - Call `refetch()` to refresh the entire feed
-
 ### 3. Render the Feed (`app/(tabs)/index.tsx`)
 
 **Find the TODOs at lines 45-123**
@@ -54,7 +53,6 @@ Replace the placeholder with a FlatList that:
 - Renders PostCard components for each post
 - Implements `keyExtractor` to return unique post IDs
 - Calls `handleLoadMore` when scrolling near the bottom
-- Implements pull-to-refresh with RefreshControl
 - Shows loading footer and empty state (helpers are provided)
 
 ### 4. Add Like/Unlike Functionality (`components/post-card.tsx`)
@@ -128,9 +126,8 @@ interface Post {
 
 1. Posts load and display correctly
 2. Infinite scroll loads more posts
-3. Pull-to-refresh resets the feed
-4. Like button updates instantly (optimistic)
-5. Code is clean and follows React Query best practices
+3. Like button updates instantly (optimistic)
+4. Code is clean and follows React Query best practices
 
 ## Questions?
 

@@ -21,60 +21,19 @@ Then open the app in your browser.
 
 ### 1. Fetch Posts with Infinite Scrolling (`app/(tabs)/index.tsx`)
 
-**Find the TODOs at lines 8-29**
-
-1. Import and set up `useInfiniteQuery` from `@tanstack/react-query`
-   - Import `apiClient` from `@/lib/api-client`
-   - Use `queryKey: ['posts']`
-   - Use `queryFn: ({ pageParam = 0 }) => apiClient.getPosts(pageParam, 20)`
-   - Set `initialPageParam: 0`
-
-2. Implement `getNextPageParam`:
-   - Return `undefined` if `lastPage.length < 20` (no more pages)
-   - Otherwise return `allPages.length * 20` (next offset)
-
-3. Destructure the query result:
-   - `data`, `isLoading`, `error`, `fetchNextPage`, `hasNextPage`, `isFetchingNextPage`
-
-4. Flatten the pages array to get all posts: `data?.pages?.flat() || []`
+Implement a query to fetch posts using `useInfiniteQuery` and set up pagination. Extract the posts data and handle loading/error states.
 
 ### 2. Implement Pagination (`app/(tabs)/index.tsx`)
 
-**Find the TODOs at lines 31-43**
-
-1. Implement `handleLoadMore` function:
-   - Call `fetchNextPage()` if `hasNextPage` is true and not currently `isFetchingNextPage`
+Implement infinite scrolling pagination to load more posts as the user scrolls.
 
 ### 3. Render the Feed (`app/(tabs)/index.tsx`)
 
-**Find the TODOs at lines 45-123**
-
-Replace the placeholder with a FlatList that:
-- Renders PostCard components for each post
-- Implements `keyExtractor` to return unique post IDs
-- Calls `handleLoadMore` when scrolling near the bottom
-- Shows loading footer and empty state (helpers are provided)
+Replace the placeholder with a FlatList that displays posts, handles pagination, and shows appropriate loading/error states.
 
 ### 4. Add Like/Unlike Functionality (`components/post-card.tsx`)
 
-**Find the TODOs at lines 20-48**
-
-1. Implement `likeMutation` using `useMutation`:
-   - Use `apiClient.likePost(id)` as `mutationFn`
-
-2. Implement `unlikeMutation` using `useMutation`:
-   - Use `apiClient.unlikePost(id)` as `mutationFn`
-
-3. For both mutations, implement optimistic updates:
-   - **onMutate**: Cancel outgoing refetches, snapshot previous data, update cache optimistically
-   - **onSuccess**: Update cache with server response
-   - **onError**: Rollback to previous data
-
-4. Cache update structure:
-   - Query data is `{ pages: Post[][] }`
-   - Find and update the post in the nested array
-   - For like: increment `likes` by 1, set `isLiked` to `true`
-   - For unlike: decrement `likes` by 1, set `isLiked` to `false`
+Implement like and unlike mutations with optimistic updates for instant UI feedback.
 
 ## REST API
 
@@ -109,10 +68,8 @@ interface Post {
 
 ## Important Notes
 
-- **Optimistic Updates Required**: Mutations have 1-1.5 second delays. Implement optimistic updates in `onMutate` for instant UI feedback.
-- **React Query Cache**: Query data structure is `{ pages: Post[][] }` for infinite queries.
-- **Pagination**: Use `useInfiniteQuery` with `getNextPageParam` to handle offset-based pagination.
-- **Dataset**: 500 mock posts available for testing pagination.
+- Mutations have network delays that should be handled appropriately.
+- 500 mock posts are available for testing pagination.
 
 ## What's Already Built
 
@@ -128,6 +85,32 @@ interface Post {
 2. Infinite scroll loads more posts
 3. Like button updates instantly (optimistic)
 4. Code is clean and follows React Query best practices
+
+## Bonus: Performance Improvements (Optional)
+
+If you complete the main exercise early and have time remaining within the 45-50 minute limit, identify and implement performance optimizations. Look for opportunities to improve rendering performance, reduce unnecessary computations, and prevent race conditions.
+
+### Areas to Consider
+
+- **Component Re-renders**: Are components re-rendering unnecessarily when parent state changes? Consider React's memoization patterns to prevent re-renders when props haven't changed.
+- **Expensive Computations**: Are there calculations that run on every render but could be optimized? Look for functions that process data but only depend on specific props.
+- **List Performance**: Are there optimizations that could improve FlatList rendering performance? Consider memoizing callbacks passed to FlatList to prevent unnecessary item re-renders.
+- **User Interactions**: Are there edge cases with rapid user interactions that should be handled? Think about preventing duplicate mutations when users click buttons quickly.
+
+### Success Criteria for Bonus
+
+1. ✅ Unnecessary component re-renders are minimized
+2. ✅ Expensive computations are optimized
+3. ✅ List rendering performance is improved
+4. ✅ Rapid user interactions are handled gracefully
+5. ✅ Performance improvements are measurable (smoother scrolling, fewer re-renders)
+
+### Testing Performance Improvements
+
+- Use React DevTools Profiler to verify fewer re-renders
+- Test scrolling performance with 100+ posts
+- Verify that rapid interactions don't cause issues
+- Verify that optimizations reduce unnecessary work
 
 ## Questions?
 

@@ -1,40 +1,23 @@
 {
-  // These tasks will run in order when initializing your CodeSandbox project.
+  "$schema": "https://codesandbox.io/schemas/tasks.json",
   "setupTasks": [
     {
       "name": "Install Dependencies",
       "command": "npm install"
     }
   ],
-
-  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
   "tasks": {
     "start": {
-      "name": "start",
-      "command": "npm run start",
+      "name": "Start Expo",
+      "command": "expo start --web --port 3000",
       "runAtStart": true,
       "preview": {
-        "port": 8080
+        "port": 3000
       }
     },
-    "android": {
-      "name": "android",
-      "command": "npm run android",
-      "runAtStart": false
-    },
-    "ios": {
-      "name": "ios",
-      "command": "npm run ios",
-      "runAtStart": false
-    },
-    "web": {
-      "name": "web",
-      "command": "npm run web",
-      "runAtStart": false
-    },
-    "install": {
-      "name": "install dependencies",
-      "command": "pnpm install"
+    "start-tunnel": {
+      "name": "Start with Tunnel (for mobile)",
+      "command": "expo start --tunnel"
     }
   }
 }

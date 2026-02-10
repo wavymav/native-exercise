@@ -2,7 +2,7 @@ import { delay, posts } from '@/lib/posts-data'
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  params: { id: string }
 ) {
   const { id } = params
 

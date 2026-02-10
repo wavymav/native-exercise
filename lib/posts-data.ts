@@ -44,7 +44,7 @@ const generateMockPosts = (count: number) => {
       imageUrl: `https://picsum.photos/seed/${i}/400/300`,
       likes: 0,
       timestamp: new Date(
-        Date.UTC(2025, 10, 1) - i * 24 * 60 * 60 * 1000
+        Date.UTC(2026, 2, 10) - i * 24 * 60 * 60 * 1000
       ).toISOString(),
       isLiked: false
     })

@@ -8,7 +8,7 @@ export const getApiBaseUrl = () => {
   } else if (Platform.OS === 'ios') {
     return 'http://localhost:8081' // iOS simulator
   }
-  return 'http://localhost:8081' // Web/default
+  return '' // Web - use relative URLs for CodeSandbox/React Native Web
 }
 
 export const queryClient = new QueryClient({

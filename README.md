@@ -4,38 +4,82 @@
 
 ## Overview
 
-Build a working post feed with infinite scrolling and like functionality using React Native, Expo, and GraphQL.
+Build a working post feed with infinite scrolling and like functionality using React Native Web (running in CodeSandbox), Expo, and **your choice of data fetching approach**.
+
+**Environment:** This exercise runs in CodeSandbox using React Native Web. The app runs in your browser, not on a mobile device.
 
 **Time Limit:** 45-50 minutes
 
+## Choose Your Approach
+
+This exercise offers two implementation paths. Choose the one you're most comfortable with:
+
+### Option A: GraphQL + Apollo Client
+- Use GraphQL queries and mutations
+- Leverage Apollo Client's built-in caching and optimistic updates
+- Familiar GraphQL syntax and Apollo hooks
+
+### Option B: REST + TanStack Query
+- Use REST API endpoints
+- Leverage TanStack Query's powerful caching and infinite query features
+- Familiar REST patterns with modern React Query hooks
+
+**Both approaches solve the same problem and are evaluated equally.** Choose based on your experience and preference.
+
 ## Getting Started
 
-```bash
-npm install
-npx expo start --web
-```
+This exercise runs in **CodeSandbox** using **React Native Web**. The CodeSandbox environment is pre-configured, so you can start coding immediately.
 
-Then open the app in your browser.
+The app will run in your browser. You don't need to install anything locally or start a development server.
 
 ## What You Need to Implement
 
-### 1. Fetch Posts with GraphQL (`app/(tabs)/index.tsx`)
+### 1. Fetch Posts (`app/(tabs)/index.tsx`)
 
-Implement a GraphQL query to fetch posts and set up the query hook. Extract the posts data and handle loading/error states.
+**Option A (GraphQL + Apollo):**
+- Implement a GraphQL query to fetch posts
+- Set up the `useQuery` hook from Apollo Client
+- Extract the posts data and handle loading/error states
+
+**Option B (REST + TanStack Query):**
+- Set up the `useInfiniteQuery` hook from TanStack Query
+- Create a fetch function that calls the REST API
+- Extract the posts data and handle loading/error states
 
 ### 2. Implement Pagination (`app/(tabs)/index.tsx`)
 
-Implement infinite scrolling pagination to load more posts as the user scrolls.
+**Option A (GraphQL + Apollo):**
+- Use `fetchMore` to load additional posts as the user scrolls
+- Handle pagination parameters (offset/limit) correctly
+
+**Option B (REST + TanStack Query):**
+- Use `fetchNextPage` to load additional posts as the user scrolls
+- Configure `getNextPageParam` to determine when more data is available
 
 ### 3. Render the Feed (`app/(tabs)/index.tsx`)
 
-Replace the placeholder with a FlatList that displays posts, handles pagination, and shows appropriate loading/error states.
+Replace the placeholder with a FlatList that:
+- Displays posts using the `PostCard` component
+- Handles infinite scrolling pagination
+- Shows appropriate loading/error states
+
+**Note:** Pull-to-refresh is not available in React Native Web. Focus on implementing infinite scroll pagination instead.
 
 ### 4. Add Like/Unlike Functionality (`components/post-card.tsx`)
 
-Implement like and unlike mutations with optimistic updates for instant UI feedback.
+**Option A (GraphQL + Apollo):**
+- Implement `likePost` and `unlikePost` mutations
+- Use `useMutation` hooks with optimistic updates
+- Update the Apollo cache appropriately
 
-## GraphQL API
+**Option B (REST + TanStack Query):**
+- Implement `useMutation` hooks for like/unlike API calls
+- Use `onMutate` for optimistic updates
+- Handle cache updates and rollback on error
+
+## API Documentation
+
+### Option A: GraphQL API
 
 All queries and mutations are available at `/api/graphql`:
 
@@ -61,15 +105,57 @@ type Mutation {
 }
 ```
 
+### Option B: REST API
+
+All endpoints are available at `/api/posts`:
+
+**GET `/api/posts?offset=0&limit=20`**
+- Returns an array of posts
+- Query parameters:
+  - `offset` (optional, default: 0): Starting index for pagination
+  - `limit` (optional, default: 20): Number of posts to return
+- Response: `Post[]`
+
+**POST `/api/posts/:id/like`**
+- Likes a post with the given ID
+- Returns the updated post
+- Response: `Post`
+
+**POST `/api/posts/:id/unlike`**
+- Unlikes a post with the given ID
+- Returns the updated post
+- Response: `Post`
+
+**Post Type:**
+```typescript
+interface Post {
+  id: string
+  creatorName: string
+  creatorAvatar: string
+  content: string
+  imageUrl: string | null
+  likes: number
+  timestamp: string
+  isLiked: boolean
+}
+```
+
 ## Important Notes
 
-- Mutations have network delays that should be handled appropriately.
-- 500 mock posts are available for testing pagination.
+- **Environment:** This exercise runs in CodeSandbox using React Native Web. The app runs in your browser, not on a mobile device.
+- **Pull-to-Refresh:** Not available in React Native Web. Focus on infinite scroll pagination instead.
+- **Mutations:** Have network delays that should be handled appropriately (optimistic updates recommended)
+- **Test Data:** 500 mock posts are available for testing pagination
+- **API Consistency:** Both API approaches use the same underlying data source and have identical delay behavior
 
 ## What's Already Built
 
-- Apollo Client setup with cache configured for pagination
-- GraphQL server with resolvers
+- **CodeSandbox Environment:** Pre-configured for React Native Web
+- **Option A:** Apollo Client setup with cache configured for pagination
+- **Option B:** TanStack Query client with sensible defaults
+- Both providers are set up in the root layout
+- GraphQL server with resolvers (Option A)
+- REST API endpoints (Option B)
 - Complete UI components and styling
 - Loading/error states
 - Performance optimizations
@@ -78,8 +164,9 @@ type Mutation {
 
 1. Posts load and display correctly
 2. Infinite scroll loads more posts
-3. Like button updates instantly (optimistic)
-4. Code is clean and follows Apollo best practices
+3. Like button updates instantly (optimistic updates)
+4. Code is clean and follows best practices for your chosen approach
+5. Error states are handled gracefully
 
 ## Bonus: Performance Improvements (Optional)
 

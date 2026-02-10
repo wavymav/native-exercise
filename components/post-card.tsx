@@ -12,21 +12,185 @@ export interface Post {
   isLiked: boolean
 }
 
-// TODO: Define a GraphQL mutation to like a post
+// ============================================================================
+// CHOOSE YOUR APPROACH: Option A (GraphQL + Apollo) or Option B (REST + TanStack Query)
+// ============================================================================
+
+// OPTION A: GraphQL + Apollo Client
+// TODO: Define GraphQL mutations to like and unlike posts
+// import { gql, useMutation } from '@apollo/client'
 // const LIKE_POST = gql`
-//   # Your mutation here
+//   mutation LikePost($id: ID!) {
+//     likePost(id: $id) {
+//       id
+//       likes
+//       isLiked
+//     }
+//   }
+// `
+// const UNLIKE_POST = gql`
+//   mutation UnlikePost($id: ID!) {
+//     unlikePost(id: $id) {
+//       id
+//       likes
+//       isLiked
+//     }
+//   }
 // `
 
-// TODO: Define a GraphQL mutation to unlike a post
-// const UNLIKE_POST = gql`
-//   # Your mutation here
-// `
+// OPTION B: REST + TanStack Query
+// TODO: Import useMutation from TanStack Query
+// import { useMutation, useQueryClient } from '@tanstack/react-query'
+// import { getApiBaseUrl } from '@/lib/query-client'
 
 export const PostCard = ({ post }: { post: Post }) => {
+  // ============================================================================
+  // OPTION A: GraphQL + Apollo Client Implementation
+  // ============================================================================
   // TODO: Set up mutation hooks for liking and unliking posts
+  // const [likePost] = useMutation(LIKE_POST, {
+  //   optimisticResponse: {
+  //     likePost: {
+  //       id: post.id,
+  //       likes: post.isLiked ? post.likes : post.likes + 1,
+  //       isLiked: true,
+  //       __typename: 'Post',
+  //     },
+  //   },
+  //   update: (cache, { data }) => {
+  //     if (data?.likePost) {
+  //       cache.modify({
+  //         id: cache.identify({ __typename: 'Post', id: post.id }),
+  //         fields: {
+  //           likes: () => data.likePost.likes,
+  //           isLiked: () => data.likePost.isLiked,
+  //         },
+  //       })
+  //     }
+  //   },
+  // })
+  // const [unlikePost] = useMutation(UNLIKE_POST, {
+  //   optimisticResponse: {
+  //     unlikePost: {
+  //       id: post.id,
+  //       likes: post.isLiked ? post.likes - 1 : post.likes,
+  //       isLiked: false,
+  //       __typename: 'Post',
+  //     },
+  //   },
+  //   update: (cache, { data }) => {
+  //     if (data?.unlikePost) {
+  //       cache.modify({
+  //         id: cache.identify({ __typename: 'Post', id: post.id }),
+  //         fields: {
+  //           likes: () => data.unlikePost.likes,
+  //           isLiked: () => data.unlikePost.isLiked,
+  //         },
+  //       })
+  //     }
+  //   },
+  // })
+
+  // ============================================================================
+  // OPTION B: REST + TanStack Query Implementation
+  // ============================================================================
+  // TODO: Set up mutation hooks for liking and unliking posts
+  // const queryClient = useQueryClient()
+  // const likeMutation = useMutation({
+  //   mutationFn: async () => {
+  //     const response = await fetch(`${getApiBaseUrl()}/api/posts/${post.id}/like`, {
+  //       method: 'POST',
+  //     })
+  //     if (!response.ok) throw new Error('Failed to like post')
+  //     return response.json()
+  //   },
+  //   onMutate: async () => {
+  //     // Cancel outgoing refetches
+  //     await queryClient.cancelQueries({ queryKey: ['posts'] })
+  //     // Snapshot previous value
+  //     const previousPosts = queryClient.getQueryData(['posts'])
+  //     // Optimistically update cache
+  //     queryClient.setQueryData(['posts'], (old: any) => {
+  //       if (!old) return old
+  //       return {
+  //         ...old,
+  //         pages: old.pages.map((page: Post[]) =>
+  //           page.map((p) =>
+  //             p.id === post.id
+  //               ? { ...p, likes: p.likes + 1, isLiked: true }
+  //               : p
+  //           )
+  //         ),
+  //       }
+  //     })
+  //     return { previousPosts }
+  //   },
+  //   onError: (err, variables, context) => {
+  //     // Rollback on error
+  //     if (context?.previousPosts) {
+  //       queryClient.setQueryData(['posts'], context.previousPosts)
+  //     }
+  //   },
+  //   onSettled: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['posts'] })
+  //   },
+  // })
+  // const unlikeMutation = useMutation({
+  //   mutationFn: async () => {
+  //     const response = await fetch(`${getApiBaseUrl()}/api/posts/${post.id}/unlike`, {
+  //       method: 'POST',
+  //     })
+  //     if (!response.ok) throw new Error('Failed to unlike post')
+  //     return response.json()
+  //   },
+  //   onMutate: async () => {
+  //     await queryClient.cancelQueries({ queryKey: ['posts'] })
+  //     const previousPosts = queryClient.getQueryData(['posts'])
+  //     queryClient.setQueryData(['posts'], (old: any) => {
+  //       if (!old) return old
+  //       return {
+  //         ...old,
+  //         pages: old.pages.map((page: Post[]) =>
+  //           page.map((p) =>
+  //             p.id === post.id
+  //               ? { ...p, likes: p.likes - 1, isLiked: false }
+  //               : p
+  //           )
+  //         ),
+  //       }
+  //     })
+  //     return { previousPosts }
+  //   },
+  //   onError: (err, variables, context) => {
+  //     if (context?.previousPosts) {
+  //       queryClient.setQueryData(['posts'], context.previousPosts)
+  //     }
+  //   },
+  //   onSettled: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['posts'] })
+  //   },
+  // })
 
   const handleLike = () => {
+    // ============================================================================
+    // OPTION A: GraphQL + Apollo Client
+    // ============================================================================
     // TODO: Implement like/unlike functionality with optimistic updates
+    // if (post.isLiked) {
+    //   unlikePost({ variables: { id: post.id } })
+    // } else {
+    //   likePost({ variables: { id: post.id } })
+    // }
+
+    // ============================================================================
+    // OPTION B: REST + TanStack Query
+    // ============================================================================
+    // TODO: Implement like/unlike functionality with optimistic updates
+    // if (post.isLiked) {
+    //   unlikeMutation.mutate()
+    // } else {
+    //   likeMutation.mutate()
+    // }
   }
 
   const formatTimestamp = (timestamp: string) => {

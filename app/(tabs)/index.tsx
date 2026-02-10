@@ -5,15 +5,75 @@ import { ThemedView } from '@/components/themed-view'
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 
+// ============================================================================
+// CHOOSE YOUR APPROACH: Option A (GraphQL + Apollo) or Option B (REST + TanStack Query)
+// ============================================================================
+
+// OPTION A: GraphQL + Apollo Client
 // TODO: Define a GraphQL query to fetch posts
+// import { gql, useQuery } from '@apollo/client'
 // const GET_POSTS = gql`
-//   # Your query here
+//   query GetPosts($offset: Int, $limit: Int) {
+//     posts(offset: $offset, limit: $limit) {
+//       id
+//       creatorName
+//       creatorAvatar
+//       content
+//       imageUrl
+//       likes
+//       timestamp
+//       isLiked
+//     }
+//   }
 // `
 
-export default function FeedScreen() {
-  // TODO: Set up the useQuery hook to fetch posts
+// OPTION B: REST + TanStack Query
+// TODO: Set up useInfiniteQuery hook to fetch posts
+// import { useInfiniteQuery } from '@tanstack/react-query'
+// import { getApiBaseUrl } from '@/lib/query-client'
 
-  // Placeholder variables - replace these with values from your query hook
+export default function FeedScreen() {
+  // ============================================================================
+  // OPTION A: GraphQL + Apollo Client Implementation
+  // ============================================================================
+  // TODO: Set up the useQuery hook to fetch posts
+  // const { data, loading, error, fetchMore, refetch, networkStatus } = useQuery(GET_POSTS, {
+  //   variables: { offset: 0, limit: 20 },
+  //   notifyOnNetworkStatusChange: true,
+  // })
+  // const posts: Post[] = data?.posts || []
+  // const isRefreshing = networkStatus === 4 // NetworkStatus.refetch
+
+  // ============================================================================
+  // OPTION B: REST + TanStack Query Implementation
+  // ============================================================================
+  // TODO: Set up useInfiniteQuery hook to fetch posts
+  // const {
+  //   data,
+  //   fetchNextPage,
+  //   hasNextPage,
+  //   isFetchingNextPage,
+  //   isLoading,
+  //   error,
+  //   refetch,
+  //   isRefetching,
+  // } = useInfiniteQuery({
+  //   queryKey: ['posts'],
+  //   queryFn: async ({ pageParam = 0 }) => {
+  //     const response = await fetch(`${getApiBaseUrl()}/api/posts?offset=${pageParam}&limit=20`)
+  //     if (!response.ok) throw new Error('Failed to fetch posts')
+  //     return response.json()
+  //   },
+  //   getNextPageParam: (lastPage, allPages) => {
+  //     return lastPage.length === 20 ? allPages.length * 20 : undefined
+  //   },
+  //   initialPageParam: 0,
+  // })
+  // const posts: Post[] = data?.pages.flat() || []
+  // const loading = isLoading
+  // const isRefreshing = isRefetching
+
+  // Placeholder variables - replace these with values from your chosen approach
   const loading = false
   const error: { message: string } | undefined = undefined
   const fetchMore = () => {}
@@ -23,14 +83,49 @@ export default function FeedScreen() {
   const posts: Post[] = []
   const isRefreshing = false
 
+  // ============================================================================
+  // OPTION A: GraphQL + Apollo Client - Pagination
+  // ============================================================================
+  // TODO: Implement handleLoadMore function for infinite scrolling pagination
+  // const handleLoadMore = () => {
+  //   if (!loading && hasMore) {
+  //     fetchMore({
+  //       variables: {
+  //         offset: posts.length,
+  //         limit: 20,
+  //       },
+  //     })
+  //   }
+  // }
+
+  // ============================================================================
+  // OPTION B: REST + TanStack Query - Pagination
+  // ============================================================================
+  // TODO: Implement handleLoadMore function for infinite scrolling pagination
+  // const handleLoadMore = () => {
+  //   if (hasNextPage && !isFetchingNextPage) {
+  //     fetchNextPage()
+  //   }
+  // }
+
   // TODO: Implement handleLoadMore function for infinite scrolling pagination
   const handleLoadMore = () => {
     // Your implementation here
   }
 
-  // TODO: Implement handleRefresh function for pull-to-refresh
+  // ============================================================================
+  // OPTION A & B: Refresh functionality (optional)
+  // ============================================================================
+  // NOTE: Pull-to-refresh is not available in React Native Web (CodeSandbox environment)
+  // You can implement a manual refresh button if desired, but it's not required.
+  // TODO: (Optional) Implement handleRefresh function for manual refresh
+  // const handleRefresh = () => {
+  //   refetch()
+  // }
+
+  // TODO: (Optional) Implement handleRefresh function for manual refresh
   const handleRefresh = () => {
-    // Your implementation here
+    // Your implementation here (optional - not required for React Native Web)
   }
 
   const renderPost = () => null // TODO: implement post rendering

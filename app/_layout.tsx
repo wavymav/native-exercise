@@ -5,6 +5,7 @@ import {
   ApolloProvider,
   NormalizedCacheObject
 } from '@apollo/client'
+import { QueryClientProvider } from '@tanstack/react-query'
 import {
   DarkTheme,
   DefaultTheme,
@@ -18,6 +19,7 @@ import 'react-native-reanimated'
 import '../global.css'
 
 import { initializeApollo } from '@/lib/apollo-client'
+import { queryClient } from '@/lib/query-client'
 
 export const unstable_settings = {
   anchor: '(tabs)'
@@ -43,12 +45,14 @@ export default function RootLayout() {
 
   return (
     <ApolloProvider client={client}>
-      <ThemeProvider value={isDarkMode ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={isDarkMode ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </QueryClientProvider>
     </ApolloProvider>
   )
 }

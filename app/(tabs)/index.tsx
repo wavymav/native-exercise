@@ -1,64 +1,30 @@
-import { Post, PostCard } from '@/components/post-card'
 import { Spinner } from '@/components/spinner'
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
-import { getApiBaseUrl } from '@/lib/query-client'
-import { useInfiniteQuery } from '@tanstack/react-query'
 import React from 'react'
-import { FlatList, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 export default function FeedScreen() {
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    error,
-    refetch,
-  } = useInfiniteQuery({
-    queryKey: ['posts'],
-    queryFn: async ({ pageParam = 0 }) => {
-      const baseUrl = getApiBaseUrl()
-      const url = baseUrl ? `${baseUrl}/api/posts` : '/api/posts'
-      const response = await fetch(`${url}?offset=${pageParam}&limit=20`)
-      if (!response.ok) throw new Error('Failed to fetch posts')
-      return response.json()
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length === 20 ? allPages.length * 20 : undefined
-    },
-    initialPageParam: 0,
-  })
-  const posts: Post[] = data?.pages.flat() || []
-  const loading = isLoading
+  // TODO: Fetch posts from the API with pagination
+  const error = undefined 
+  const loading = false 
+  const posts: any[] = []
 
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
+  // TODO: Load more posts when the user scrolls to the end
+  const handleLoadMore = () => {}
 
-  const renderFooter = () => {
-    if (!isFetchingNextPage) return null
-    return (
-      <View className="py-4">
-        <Spinner />
-      </View>
-    )
-  }
+  // TODO: Show a loading indicator while fetching the next page
+  const renderFooter = () => {}
 
   // NOTE: Pull-to-refresh is not available in React Native Web (CodeSandbox environment)
-  // You can implement a manual refresh button if desired, but it's not required.
-  const handleRefresh = () => {
-    refetch()
-  }
+  // TODO: Implement refresh logic
+  const handleRefresh = () => {}
 
-  const renderPost = ({ item }: { item: Post }) => {
-    return <PostCard post={item} />
-  }
+  // TODO: Render each post using the PostCard component
+  const renderPost = () => null
 
-  const keyExtractor = (item: Post) => item.id
+  // TODO: Provide a unique key for each post
+  const keyExtractor = () => null
 
   const renderEmpty = () => {
     if (loading && posts.length === 0) {
@@ -106,16 +72,8 @@ export default function FeedScreen() {
 
   return (
     <ThemedView className="flex-1">
-      <FlatList
-        data={posts}
-        renderItem={renderPost}
-        keyExtractor={keyExtractor}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-        ListEmptyComponent={renderEmpty}
-        contentContainerStyle={posts.length === 0 ? { flex: 1 } : undefined}
-      />
+      {/* TODO: Implement FlatList with infinite scroll */}
+      {renderEmpty()}
     </ThemedView>
   )
 }

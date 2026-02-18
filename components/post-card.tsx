@@ -1,33 +1,7 @@
 import { ThemedText } from '@/components/themed-text'
-import { Image, TouchableOpacity, View } from 'react-native'
-
-// ============================================================================
-// CHOOSE YOUR APPROACH: Option A (GraphQL + Apollo) or Option B (REST + TanStack Query)
-// ============================================================================
-
-// OPTION A: GraphQL + Apollo Client
-// const LIKE_POST = gql`
-//   mutation LikePost($id: ID!) {
-//     likePost(id: $id) {
-//       id
-//       likes
-//       isLiked
-//     }
-//   }
-// `
-// const UNLIKE_POST = gql`
-//   mutation UnlikePost($id: ID!) {
-//     unlikePost(id: $id) {
-//       id
-//       likes
-//       isLiked
-//     }
-//   }
-// `
-
-// OPTION B: REST + TanStack Query
 import { getApiBaseUrl } from '@/lib/query-client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Image, TouchableOpacity, View } from 'react-native'
 
 export interface Post {
   id: string
@@ -41,55 +15,6 @@ export interface Post {
 }
 
 export const PostCard = ({ post }: { post: Post }) => {
-  // ============================================================================
-  // OPTION A: GraphQL + Apollo Client Implementation
-  // ============================================================================
-  // const [likePost] = useMutation(LIKE_POST, {
-  //   optimisticResponse: {
-  //     likePost: {
-  //       id: post.id,
-  //       likes: post.isLiked ? post.likes : post.likes + 1,
-  //       isLiked: true,
-  //       __typename: 'Post',
-  //     },
-  //   },
-  //   update: (cache, { data }) => {
-  //     if (data?.likePost) {
-  //       cache.modify({
-  //         id: cache.identify({ __typename: 'Post', id: post.id }),
-  //         fields: {
-  //           likes: () => data.likePost.likes,
-  //           isLiked: () => data.likePost.isLiked,
-  //         },
-  //       })
-  //     }
-  //   },
-  // })
-  // const [unlikePost] = useMutation(UNLIKE_POST, {
-  //   optimisticResponse: {
-  //     unlikePost: {
-  //       id: post.id,
-  //       likes: post.isLiked ? post.likes - 1 : post.likes,
-  //       isLiked: false,
-  //       __typename: 'Post',
-  //     },
-  //   },
-  //   update: (cache, { data }) => {
-  //     if (data?.unlikePost) {
-  //       cache.modify({
-  //         id: cache.identify({ __typename: 'Post', id: post.id }),
-  //         fields: {
-  //           likes: () => data.unlikePost.likes,
-  //           isLiked: () => data.unlikePost.isLiked,
-  //         },
-  //       })
-  //     }
-  //   },
-  // })
-
-  // ============================================================================
-  // OPTION B: REST + TanStack Query Implementation
-  // ============================================================================
   const queryClient = useQueryClient()
   const likeMutation = useMutation({
     mutationFn: async () => {
@@ -175,18 +100,6 @@ export const PostCard = ({ post }: { post: Post }) => {
   })
 
   const handleLike = () => {
-    // ============================================================================
-    // OPTION A: GraphQL + Apollo Client
-    // ============================================================================
-    // if (post.isLiked) {
-    //   unlikePost({ variables: { id: post.id } })
-    // } else {
-    //   likePost({ variables: { id: post.id } })
-    // }
-
-    // ============================================================================
-    // OPTION B: REST + TanStack Query
-    // ============================================================================
     if (post.isLiked) {
       unlikeMutation.mutate()
     } else {

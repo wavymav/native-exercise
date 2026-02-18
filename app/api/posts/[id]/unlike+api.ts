@@ -6,7 +6,7 @@ export async function POST(
 ) {
   const { id } = params
 
-  // Match the delay behavior from GraphQL resolvers
+  // Simulate network delay
   await delay(1000 + Math.random() * 500)
 
   const post = posts.find((p) => p.id === id)

@@ -6,19 +6,7 @@ These questions help set context, understand the candidate's experience level, a
 
 ### Experience & Background
 
-1. **Data Fetching Approach**
-
-   - Which approach did you choose: GraphQL + Apollo Client or REST + TanStack Query? Why?
-   - How familiar are you with your chosen approach? Have you worked with it in production apps?
-   - What's your experience with the alternative approach? Have you used it before?
-
-2. **GraphQL & Apollo Client Experience** (if Option A chosen)
-
-   - How familiar are you with Apollo Client? Have you worked with it in production apps?
-   - What's your experience with GraphQL queries and mutations? Any challenges you've encountered?
-   - Have you implemented optimistic updates before? Can you walk me through your approach?
-
-3. **REST & TanStack Query Experience** (if Option B chosen)
+1. **REST & TanStack Query Experience**
 
    - How familiar are you with TanStack Query (React Query)? Have you worked with it in production apps?
    - What's your experience with infinite queries and pagination? Any challenges you've encountered?
@@ -46,7 +34,6 @@ These questions help set context, understand the candidate's experience level, a
    - How would you approach implementing optimistic updates for the like/unlike functionality?
    - What considerations do you have for handling the network delays mentioned in the requirements?
    - How would you ensure the infinite scroll performs well with 500+ posts?
-   - What are the trade-offs between GraphQL and REST for this use case?
 
 ---
 
@@ -56,29 +43,9 @@ These questions dive deep into the candidate's implementation, decision-making, 
 
 ### Implementation Deep Dive
 
-#### Option A: GraphQL & Apollo Client
+#### Query Implementation
 
-1. **Query Implementation**
-
-   - Walk me through your GraphQL query. Why did you structure it this way?
-   - How did you handle the pagination parameters (offset/limit)? Why this approach?
-   - Did you use `fetchMore` or `refetch`? What's the difference and why did you choose one over the other?
-
-2. **Cache Understanding**
-
-   - Looking at the existing cache configuration in `apollo-client.ts`, can you explain what it's doing?
-   - What does `keyArgs: false` do? Why is it needed for pagination?
-   - How does the `merge` function work? What does it do when `offset === 0` vs other values?
-   - What happens if a user likes a post, then refetches? How does the cache handle this?
-
-3. **Optimistic Updates**
-   - Walk me through your optimistic update implementation. How does it work?
-   - What happens if the mutation fails? How would you handle rollback?
-   - Why are optimistic updates important for UX in this context?
-
-#### Option B: REST & TanStack Query
-
-1. **Query Implementation**
+1. **useInfiniteQuery Setup**
 
    - Walk me through your `useInfiniteQuery` setup. Why did you structure it this way?
    - How did you handle the pagination parameters (offset/limit)? Why this approach?
@@ -116,13 +83,12 @@ These questions dive deep into the candidate's implementation, decision-making, 
 6. **Error Handling**
 
    - How did you handle error states? What happens if the query fails?
-   - How would you handle network errors differently from GraphQL errors?
+   - How would you handle network errors differently from server errors?
    - What about retry logic? When would you implement it?
 
 7. **TypeScript & Type Safety**
 
-   - **Option A:** How did you ensure type safety with the GraphQL queries? Did you generate types from the schema, or define them manually? What are the trade-offs?
-   - **Option B:** How did you ensure type safety with the REST API responses? Did you define types manually or use a schema validation library? What are the trade-offs?
+   - How did you ensure type safety with the REST API responses? Did you define types manually or use a schema validation library? What are the trade-offs?
 
 8. **Testing**
    - How would you test this implementation? What would you test first?
@@ -159,8 +125,7 @@ These questions dive deep into the candidate's implementation, decision-making, 
 13. **State Management**
 
    - Where is state managed? Why this approach?
-   - **Option A:** When would you consider using Redux or Zustand instead of Apollo's cache?
-   - **Option B:** When would you consider using Redux or Zustand instead of TanStack Query's cache?
+   - When would you consider using Redux or Zustand instead of TanStack Query's cache?
    - How would you handle global state vs. local component state?
 
 14. **NativeWind & Styling**
@@ -192,7 +157,7 @@ These questions dive deep into the candidate's implementation, decision-making, 
 18. **Monorepo & Shared Code**
 
     - If this were in a monorepo with shared packages, how would you structure it?
-    - How would you share GraphQL types between mobile and web?
+    - How would you share types between mobile and web?
     - What about shared UI components?
 
 19. **Feature Flags & Analytics**
@@ -208,56 +173,49 @@ Use these questions to assess:
 
 ### Technical Skills
 
-- ✅ **Data Fetching**: Understanding of chosen approach (GraphQL/Apollo or REST/TanStack Query)
-- ✅ **Option A - GraphQL/Apollo**: Understanding of queries, mutations, optimistic updates
-- ✅ **Option A - Apollo Cache**: Understanding of existing cache configuration and how it works
-- ✅ **Option B - REST/TanStack Query**: Understanding of infinite queries, mutations, optimistic updates
-- ✅ **Option B - TanStack Query Cache**: Understanding of query keys, cache invalidation, and cache manipulation
-- ✅ **React Native**: FlatList, pagination, performance optimization
-- ✅ **TypeScript**: Type safety, proper typing
-- ✅ **Expo**: Familiarity with Expo ecosystem
+- **REST/TanStack Query**: Understanding of infinite queries, mutations, optimistic updates
+- **TanStack Query Cache**: Understanding of query keys, cache invalidation, and cache manipulation
+- **React Native**: FlatList, pagination, performance optimization
+- **TypeScript**: Type safety, proper typing
+- **Expo**: Familiarity with Expo ecosystem
 
 ### Problem-Solving
 
-- ✅ **Approach**: Logical, systematic problem-solving
-- ✅ **Trade-offs**: Understanding of technical trade-offs
-- ✅ **Edge Cases**: Consideration of edge cases and error handling
+- **Approach**: Logical, systematic problem-solving
+- **Trade-offs**: Understanding of technical trade-offs
+- **Edge Cases**: Consideration of edge cases and error handling
 
 ### Code Quality
 
-- ✅ **Best Practices**: Following React Native and Apollo best practices
-- ✅ **Clean Code**: Readable, maintainable code
-- ✅ **Performance**: Awareness of performance implications
+- **Best Practices**: Following React Native and TanStack Query best practices
+- **Clean Code**: Readable, maintainable code
+- **Performance**: Awareness of performance implications
 
 ### Senior-Level Skills
 
-- ✅ **Architecture**: Understanding of scalable architecture
-- ✅ **Mentorship**: Ability to explain and teach concepts
-- ✅ **Production Mindset**: Thinking beyond the exercise to production concerns
+- **Architecture**: Understanding of scalable architecture
+- **Mentorship**: Ability to explain and teach concepts
+- **Production Mindset**: Thinking beyond the exercise to production concerns
 
 ---
 
 ## Red Flags to Watch For
 
-- ❌ No understanding of optimistic updates or how the chosen cache works (Apollo or TanStack Query)
-- ❌ Poor error handling or no consideration of edge cases
-- ❌ Performance issues (e.g., re-rendering entire list on like)
-- ❌ No consideration of production concerns
-- ❌ Unable to explain their implementation decisions
-- ❌ Doesn't ask clarifying questions when stuck
-- ❌ **Option A:** No understanding of Apollo cache merge functions or keyArgs
-- ❌ **Option B:** No understanding of TanStack Query query keys or cache manipulation
+- No understanding of optimistic updates or how TanStack Query cache works
+- Poor error handling or no consideration of edge cases
+- Performance issues (e.g., re-rendering entire list on like)
+- No consideration of production concerns
+- Unable to explain their implementation decisions
+- Doesn't ask clarifying questions when stuck
+- No understanding of TanStack Query query keys or cache manipulation
 
 ## Green Flags
 
-- ✅ Asks clarifying questions before starting
-- ✅ Chooses an approach they're comfortable with and can explain why
-- ✅ Implements optimistic updates correctly
-- ✅ Handles error states gracefully
-- ✅ Considers performance implications
-- ✅ **Option A:** Can explain how the existing Apollo cache configuration works
-- ✅ **Option B:** Can explain how TanStack Query cache and query keys work
-- ✅ Can explain trade-offs and decisions
-- ✅ Thinks about production concerns (offline, analytics, etc.)
-- ✅ Clean, readable code with good TypeScript usage
-- ✅ Can discuss the trade-offs between GraphQL and REST approaches
+- Asks clarifying questions before starting
+- Implements optimistic updates correctly
+- Handles error states gracefully
+- Considers performance implications
+- Can explain how TanStack Query cache and query keys work
+- Can explain trade-offs and decisions
+- Thinks about production concerns (offline, analytics, etc.)
+- Clean, readable code with good TypeScript usage
